@@ -31,6 +31,31 @@ class Knight {
     ellipse(centerx, centery, 65, 65);
   }
   
+  void moveKnight(int mx, int my, int avail[][]) {
+    for(int i = 0; i < 8; i++)
+    {
+      if(avail[2][i] == 1)
+      {
+        println(avail[0][i], " ", avail[1][i]);
+        if((((avail[0][i] * 130) + 130) > mx && mx > (avail[0][i] * 130)) &&
+           ((avail[1][i] * 130) + 130) > my && my > (avail[1][i] * 130))
+        {
+          setKnightX(avail[0][i]);
+          setKnightY(avail[1][i]);
+        }
+      }
+    }
+    
+    //  println("kx ", knight.getKnightX(), "  ky ", knight.getKnightY());
+      for(int i = 0; i < 3; i++)
+      {
+        for(int k = 0; k < 8; k++)
+        {
+          avail[i][k] = 0;
+        }
+      }
+  }
+  
   //This is a mess, will work on commenting it soon, It has a lot of redunant cases
   //as well. What it does though is check for which spaces it can move to and highlighting
   //those tiles.
