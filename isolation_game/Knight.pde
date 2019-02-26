@@ -59,6 +59,30 @@ class Knight {
   //This is a mess, will work on commenting it soon, It has a lot of redunant cases
   //as well. What it does though is check for which spaces it can move to and highlighting
   //those tiles.
+  
+  // Centerx   Centery  are temp variables that holds the knights locations
+  /* This Is The Initial Grid Set-Up That We Are Checking Around The Kight.
+    0  1  2  3  4  <- X coordinate
+ 0 [ ][X][ ][X][ ]
+ 1 [X][ ][ ][ ][X]       X = Spots we are checking, if the knight can move there or not.
+ 2 [ ][ ][&][ ][ ]       &= Knight
+ 3 [X][ ][ ][ ][X]
+ 4 [ ][X][ ][X][ ]
+ ^
+ |- Y coordinate
+
+
+ How this is numbered: ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    0  1  2  3  4  <- X coordinate
+ 0 [ ][0][ ][1][ ]
+ 1 [2][ ][ ][ ][3]       X = Spots we are checking, if the knight can move there or not.
+ 2 [ ][ ][&][ ][ ]       &= Knight
+ 3 [4][ ][ ][ ][5]
+ 4 [ ][6][ ][7][ ]
+ ^
+ |- Y coordinate
+  */
   void moveSpace()
   {
     int tilex, tiley;
@@ -67,7 +91,19 @@ class Knight {
      tilex = knightX;
      tiley = knightY;
       
-      //checking x
+            //checking x
+
+
+    /* The part of the grind we are checking in this If statement
+         0  1  2    <- X coordinate
+      0 [ ][X][ ]
+      1 [X][ ][ ]      X = Spots we are checking, if the knight can move there or not.
+      2 [ ][ ][&]      &= Knight
+      3 [X][ ][ ]
+      4 [ ][X][ ]
+      ^
+      |- Y coordinate
+    */
      if((tilex-2) >= 0)
      {
        if((tiley-2) >= 0)
@@ -110,7 +146,17 @@ class Knight {
        }
      }
      
-  //////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////
+    /* This Is The Coordinates We Are Checking Now.
+        2  3  4  <- X coordinate
+     0 [ ][X][ ]
+     1 [ ][ ][X]       X = Spots we are checking, if the knight can move there or not.
+     2 [&][ ][ ]       &= Knight
+     3 [ ][ ][X]
+     4 [ ][X][ ]
+     ^
+     |- Y coordinate
+      */
     if((tilex+2) >= 0)
      {
        if((tiley-2) >= 0)
@@ -153,7 +199,19 @@ class Knight {
          avail[2][5] = 1;
        }
      }
-    ///////////////////////////////////////////////////////////// 
+      ///////////////////////////////////////////////////////////// 
+
+
+      /*This If statement is checking these two loactions
+          1  2   <- X coordinate
+       0 [X][ ]
+       1 [ ][ ]       X = Spots we are checking, if the knight can move there or not.
+       2 [ ][&]       &= Knight
+       3 [ ][ ]
+       4 [X][ ]
+       ^
+       |- Y coordinate
+        */
      if((tilex-1) >= 0)
      {
        if((tiley-2) >= 0)
@@ -181,6 +239,16 @@ class Knight {
        }
      }
    //////////////////////////////////////////////////////
+     /*
+        2  3   <- X coordinate
+     0 [ ][X]
+     1 [ ][ ]       X = Spots we are checking, if the knight can move there or not.
+     2 [&][ ]       &= Knight
+     3 [ ][ ]
+     4 [ ][X]
+     ^
+     |- Y coordinate
+      */
    if((tilex+1) >= 0)
      {
        if((tiley-2) >= 0)
