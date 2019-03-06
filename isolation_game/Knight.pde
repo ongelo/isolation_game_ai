@@ -1,280 +1,145 @@
 class Knight {
-  private int knightX;
-  private int knightY;
+  int knightX = -1;
+  int knightY = -1;
+  int avail[][] = new int[3][8];
+  int count;
   
-  public Knight() {
+  Knight() {
+    count = 0;
     
+    for(int i = 0; i < 3; i++)
+    {
+      for(int k = 0; k < 8; k++)
+      {
+        avail[i][k] = 0;
+      }
+    }
   }
   
-  public void setKnightX(int value) {
-    knightX = value;  
-  }
-  
-  public void setKnightY(int value) {
-    knightY = value;  
-  }
-  
-  public int getKnightX() {
-    return knightX;
-  }
-  
-  public int getKnightY() {
-    return knightY;  
-  }
-  
-  void printKnight()
+  boolean printKnight(int r, int g, int b)
   {
     int centerx, centery;
     centerx = (knightX * 130) + 65;
     centery = (knightY * 130) + 65;
-    fill(0,0,255);
+    fill(r, g, b);
     ellipse(centerx, centery, 65, 65);
+    
+    return true;
   }
   
-  void moveKnight(int mx, int my, int avail[][]) {
+  boolean moveKnight(int mx, int my) {
+    boolean knightMoved = false;
     for(int i = 0; i < 8; i++)
     {
       if(avail[2][i] == 1)
       {
-        println(avail[0][i], " ", avail[1][i]);
-        if((((avail[0][i] * 130) + 130) > mx && mx > (avail[0][i] * 130)) &&
-           ((avail[1][i] * 130) + 130) > my && my > (avail[1][i] * 130))
+        count++;
+        if((((avail[0][i] * 130) + 130) > mx && mx >= (avail[0][i] * 130)) &&
+           ((avail[1][i] * 130) + 130) > my && my >= (avail[1][i] * 130))
         {
-          setKnightX(avail[0][i]);
-          setKnightY(avail[1][i]);
+          knightX = avail[0][i];
+          knightY = avail[1][i];
+          board.steppedOn[avail[0][i]][avail[1][i]] = true;
+          
+          knightMoved = true;
         }
       }
     }
     
-    //  println("kx ", knight.getKnightX(), "  ky ", knight.getKnightY());
-      for(int i = 0; i < 3; i++)
-      {
-        for(int k = 0; k < 8; k++)
-        {
+    if(count == 0){ //if there are no moves, its game over
+      board.isOver = true;
+    }
+    
+    for(int i = 0; i < 3; i++) {
+        for(int k = 0; k < 8; k++) {
           avail[i][k] = 0;
         }
-      }
+    } 
+    
+    return knightMoved;
   }
   
-  //This is a mess, will work on commenting it soon, It has a lot of redunant cases
-  //as well. What it does though is check for which spaces it can move to and highlighting
-  //those tiles.
-  
-  // Centerx   Centery  are temp variables that holds the knights locations
-  /* This Is The Initial Grid Set-Up That We Are Checking Around The Kight.
-    0  1  2  3  4  <- X coordinate
- 0 [ ][X][ ][X][ ]
- 1 [X][ ][ ][ ][X]       X = Spots we are checking, if the knight can move there or not.
- 2 [ ][ ][&][ ][ ]       &= Knight
- 3 [X][ ][ ][ ][X]
- 4 [ ][X][ ][X][ ]
- ^
- |- Y coordinate
-
-
- How this is numbered: ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    0  1  2  3  4  <- X coordinate
- 0 [ ][0][ ][1][ ]
- 1 [2][ ][ ][ ][3]       X = Spots we are checking, if the knight can move there or not.
- 2 [ ][ ][&][ ][ ]       &= Knight
- 3 [4][ ][ ][ ][5]
- 4 [ ][6][ ][7][ ]
- ^
- |- Y coordinate
-  */
-  void moveSpace()
-  {
+  void setAvailForKnight() {
+    
     int tilex, tiley;
-    int count = 0;
-  
-     tilex = knightX;
-     tiley = knightY;
+    tilex = knightX;
+    tiley = knightY;
       
-            //checking x
+    if((tilex - 2) >= 0)
+    {
+      if((tiley - 1) >= 0 && !board.steppedOn[tilex-2][tiley-1])
+      {
+          avail[0][2] = (tilex-2); 
+          avail[1][2] = (tiley-1);
+          avail[2][2] = 1;
+      }
+      if((tiley + 1) <= 6 && !board.steppedOn[tilex -2][tiley + 1])
+      {
+        avail[0][4] = (tilex-2); 
+        avail[1][4] = (tiley+1);
+        avail[2][4] = 1;
+      }
+    }
 
 
-    /* The part of the grind we are checking in this If statement
-         0  1  2    <- X coordinate
-      0 [ ][X][ ]
-      1 [X][ ][ ]      X = Spots we are checking, if the knight can move there or not.
-      2 [ ][ ][&]      &= Knight
-      3 [X][ ][ ]
-      4 [ ][X][ ]
-      ^
-      |- Y coordinate
-    */
-     if((tilex-2) >= 0)
-     {
-       if((tiley-2) >= 0)
+    if((tilex - 1) >= 0)
+    {
+       if((tiley - 2) >= 0 && !board.steppedOn[tilex-1][tiley-2])
        {
-         fill(0,255,0);
-         rect(((tilex-2)*130),((tiley-1)*130), 130, 130);
-         avail[0][2] = (tilex-2); avail[1][2] = (tiley-1);
-         avail[2][2] = 1;
-         
-         rect(((tilex-1)*130),((tiley-2)*130),130,130);
-         avail[0][0] = (tilex-1); avail[1][0] = (tiley-2);
-         avail[2][0] = 1;
+           avail[0][0] = (tilex-1); 
+           avail[1][0] = (tiley-2);
+           avail[2][0] = 1;
        }
-       else if((tiley-1) >=0)
+       if((tiley + 2) <= 6 && !board.steppedOn[tilex -1][tiley + 2])
        {
-         fill(0,255,0);
-         rect(((tilex-2)*130),((tiley-1)*130), 130, 130);
-         avail[0][2] = (tilex-2); avail[1][2] = (tiley-1);
-         avail[2][2] = 1;
-       }
-       
-       if((tiley+2) <= 6)
-       {
-         fill(0,255,0);
-         rect(((tilex-2)*130),((tiley+1)*130), 130, 130);
-         avail[0][4] = (tilex-2); avail[1][4] = (tiley+1);
-         avail[2][4] = 1;
-  
-         rect(((tilex-1)*130),((tiley+2)*130), 130, 130);
-         avail[0][6] = (tilex-1); avail[1][6] = (tiley+2);
+         avail[0][6] = (tilex-1); 
+         avail[1][6] = (tiley+2);
          avail[2][6] = 1;
-         
        }
-       else if((tiley+1) <= 6)
+    }
+
+    if((tilex + 2) <= 6)
+    {
+       if((tiley - 1) >= 0 && !board.steppedOn[tilex+2][tiley-1])
        {
-         fill(0,255,0);
-         rect(((tilex-2)*130),((tiley+1)*130), 130, 130);
-         avail[0][4] = (tilex-2); avail[1][4] = (tiley+1);
-         avail[2][4] = 1;
+           avail[0][3] = (tilex+2); 
+           avail[1][3] = (tiley-1);
+           avail[2][3] = 1;
        }
-     }
-     
-    //////////////////////////////////////////////////////////////
-    /* This Is The Coordinates We Are Checking Now.
-        2  3  4  <- X coordinate
-     0 [ ][X][ ]
-     1 [ ][ ][X]       X = Spots we are checking, if the knight can move there or not.
-     2 [&][ ][ ]       &= Knight
-     3 [ ][ ][X]
-     4 [ ][X][ ]
-     ^
-     |- Y coordinate
-      */
-    if((tilex+2) >= 0)
-     {
-       if((tiley-2) >= 0)
+       if((tiley + 1) <= 6 && !board.steppedOn[tilex +2][tiley + 1])
        {
-         fill(0,255,0);
-         rect(((tilex+2)*130),((tiley-1)*130), 130, 130);
-         avail[0][3] = (tilex+2); avail[1][3] = (tiley-1);
-         avail[2][3] = 1;
-         
-         rect(((tilex+1)*130),((tiley-2)*130),130,130);
-         avail[0][1] = (tilex+1); avail[1][1] = (tiley-2);
-         avail[2][1] = 1;
-         
-       }
-       else if((tiley-1) >=0)
-       {
-         fill(0,255,0);
-         rect(((tilex+2)*130),((tiley-1)*130), 130, 130);
-         avail[0][3] = (tilex+2); avail[1][3] = (tiley-1);
-         avail[2][3] = 1;
-       }
-       
-       if((tiley+2) <= 6)
-       {
-         fill(0,255,0);
-         rect(((tilex+2)*130),((tiley+1)*130), 130, 130);
-         avail[0][5] = (tilex+2); avail[1][5] = (tiley+1);
+         avail[0][5] = (tilex+2); 
+         avail[1][5] = (tiley+1);
          avail[2][5] = 1;
-  
-         rect(((tilex+1)*130),((tiley+2)*130), 130, 130);
-         avail[0][7] = (tilex+1); avail[1][7] = (tiley+2);
+       }
+    }
+
+    if((tilex + 1) <= 6)
+    {
+       if((tiley - 2) >= 0 && !board.steppedOn[tilex+1][tiley-2])
+       {
+           avail[0][1] = (tilex+1); 
+           avail[1][1] = (tiley-2);
+           avail[2][1] = 1;
+       }
+       if((tiley + 2) <= 6 && !board.steppedOn[tilex +1][tiley + 2])
+       {
+         avail[0][7] = (tilex+1); 
+         avail[1][7] = (tiley+2);
          avail[2][7] = 1;
-         
-       }
-       else if((tiley+1) <= 6)
-       {
-         fill(0,255,0);
-         rect(((tilex+2)*130),((tiley+1)*130), 130, 130);
-         avail[0][5] = (tilex+2); avail[1][5] = (tiley+1);
-         avail[2][5] = 1;
        }
      }
-      ///////////////////////////////////////////////////////////// 
-
-
-      /*This If statement is checking these two loactions
-          1  2   <- X coordinate
-       0 [X][ ]
-       1 [ ][ ]       X = Spots we are checking, if the knight can move there or not.
-       2 [ ][&]       &= Knight
-       3 [ ][ ]
-       4 [X][ ]
-       ^
-       |- Y coordinate
-        */
-     if((tilex-1) >= 0)
-     {
-       if((tiley-2) >= 0)
-       {
-         fill(0,255,0);
-         rect(((tilex-2)*130),((tiley-1)*130), 130, 130);
-         avail[0][2] = (tilex-2); avail[1][2] = (tiley-1);
-         avail[2][2] = 1;
-         
-         rect(((tilex-1)*130),((tiley-2)*130),130,130);
-         avail[0][0] = (tilex-1); avail[1][0] = (tiley-2);
-         avail[2][0] = 1;
-       }  
-       if((tiley+2) <= 6)
-       {
-         fill(0,255,0);
-         rect(((tilex-2)*130),((tiley+1)*130), 130, 130);
-         avail[0][4] = (tilex-2); avail[1][4] = (tiley+1);
-         avail[2][4] = 1;
+  }
   
-         rect(((tilex-1)*130),((tiley+2)*130), 130, 130);
-         avail[0][1] = (tilex-1); avail[1][1] = (tiley+2);
-         avail[2][1] = 1;
-         
+  int getNumOfAvail() {
+    setAvailForKnight();
+    int total = 0;
+    for(int i = 0; i < 8; i++) {
+       if(avail[2][i] == 1) {
+         total++;
        }
-     }
-   //////////////////////////////////////////////////////
-     /*
-        2  3   <- X coordinate
-     0 [ ][X]
-     1 [ ][ ]       X = Spots we are checking, if the knight can move there or not.
-     2 [&][ ]       &= Knight
-     3 [ ][ ]
-     4 [ ][X]
-     ^
-     |- Y coordinate
-      */
-   if((tilex+1) >= 0)
-     {
-       if((tiley-2) >= 0)
-       {
-         fill(0,255,0);
-         rect(((tilex-2)*130),((tiley-1)*130), 130, 130);
-         avail[0][2] = (tilex-2); avail[1][2] = (tiley-1);
-         avail[2][2] = 1;
-         
-         rect(((tilex-1)*130),((tiley-2)*130),130,130);
-         avail[0][0] = (tilex-1); avail[1][0] = (tiley-2);
-         avail[2][0] = 1;
-       }    
-       if((tiley+2) <= 6)
-       {
-         fill(0,255,0);
-         rect(((tilex-2)*130),((tiley+1)*130), 130, 130);
-         avail[0][4] = (tilex-2); avail[1][4] = (tiley+1);
-         avail[2][4] = 1;
-  
-         rect(((tilex-1)*130),((tiley+2)*130), 130, 130);
-         avail[0][6] = (tilex-1); avail[1][6] = (tiley+2) ;
-         avail[2][6] = 1;
-         
-       }
-     }
-     //////////////////////////////////////////////////////////
+    }
+    
+    return total;
   }
 }
