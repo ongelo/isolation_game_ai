@@ -1,1 +1,1 @@
-# isolation_game_ai
+# Minimax search tree implementation for Isolation game
